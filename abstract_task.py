@@ -52,7 +52,8 @@ class abstract_task(tk.Frame):
         # pass in a tuple consisting of total time taken, percentage of work, difficulty and satisfaction
 
         pass
-
+    def get_table_name(self):
+        return 'testing_subject'
 
         #e.grid(row=0, column=3, padx=2, pady=2, sticky='we')
 
