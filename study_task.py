@@ -14,20 +14,19 @@ class study_task(abstract_task):
     def init_args(self):
         #subjecgts button and course choice
         self.subject_choice = tk.StringVar()
-        self.subjects = ['Math', 'Udacity', 'Programming']
-        self.courses= {'Math':[('Birchoff Algebra', 'B\n Algebra') 
-                        ,('Kolmogorov Real Analysis', 'K\n Analysis')]
-                , 'Udacity': [('Intro To Data Science','Intro\n Data')
-                            , ('Data Wrangering with MangoDB', 'Data\n Wrangle')]
-                , 'Programming':[('Monitor', 'Monitor')]}
+        
+        data_fh = open('study_info.txt','r')
+        self.catalog = eval(data_fh.read())
+        self.subjects = self.catalog.keys()
+        self.mycourse = ''
+        self.mysubject = ''
         self.course_choice = tk.StringVar()
-        self.detail = tk.StringVar()
-        self.expTime = tk.StringVar()
+
 
     def furnish_options(self):
         self.specify_type('work',bg='#ffffBB', foreground = '#3333aa')
         self.add_subjects()
-        self.duration_details(self.expTime, self.detail)
+
 
 #####################################################################below are functionalities
 #----------------------------------------------
@@ -46,22 +45,36 @@ class study_task(abstract_task):
 
 #------------------------------------init course selection
     def init_course(self):
-        self.subject_mb.config(text = self.subject_choice.get())
+        self.mysubject = self.subject_choice.get()
+        self.passsubject = self.mysubject
+        self.subject_mb.config(text = self.mysubject)
         
         mb = self.course_mb
         mymenu = tk.Menu(mb)
         mb['menu'] = mymenu
-        mycourses = self.courses[self.subject_choice.get()]
-        for course in mycourses:
+        
+        courses = self.catalog[self.mysubject]
+        for course in courses.keys():
             mymenu.add_radiobutton(label=course,variable = self.course_choice , command = self.disp_info)
             
         
 
     def disp_info(self):
-        self.course_mb.config(text = self.course_choice.get())
-        pass
+        self.mycourse = self.course_choice.get()
+        self.passcourse = self.mycourse
+        self.course_mb.config(text = self.mycourse)
 
 
+    def get_label(self):
+        #print "mysubject is %s"%(self.passsubject )
+        #print "mycourse is %s"%(self.passcourse)
+        return self.catalog[self.passsubject][self.passcourse][0] #it appears to be a bug of python
+
+    def get_subject_table_name(self):
+        return self.catalog[self.passsubject][self.passcourse][1]
+    def get_subject(self):
+        return 'study'
+   
 #-------------------------------------------------- custom info from xml 
     def pass_info(self):
         pass

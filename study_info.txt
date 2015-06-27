@@ -1,0 +1,9 @@
+{  'Math':{'Birchoff Algebra':('Birchoff\n Algebra', 'Math_Birchoff_Algebra') 
+          ,'Kolmogorov Real Analysis': ('Kolmog\n Analysis', 'Math_Real_Analysis')}
+
+    , 'Udacity': {'Intro To Data Science':('Intro\n Data', 'Udacity_Intro_Data_Scicence')
+                , 'Data Wrangering with MangoDB':('Data\n Wrangle','Udacity_Data_Wrangling')}
+
+            
+    , 'Programmint':{'Manager': ('Manager', 'Programming_Manager')}
+}

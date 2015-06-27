@@ -8,21 +8,22 @@ import pprint
 pp = pprint.PrettyPrinter(indent = 4)
 con = None
 
+
+
 try:
-    con  = mdb.connect('localhost', 'manager', '', 'personal')
+    con  = mdb.connect('localhost', 'manager', '', 'managementDB')
 
     cur = con.cursor()
 
-    cur.execute('select * from money')
-
-    data = cur.fetchone()
-
-    print type(data[1])
-    # pp.pprint(data)
-
+    
+    cur.execute("""CREATE TABLE IF NOT EXISTS Writers(Id INT PRIMARY KEY AUTO_INCREMENT, Name VARCHAR(25))""")  
+    cur.execute("INSERT INTO Writers(Name) VALUES('Jack London')")  
+    con.commit()
 except mdb.Error, e:
-    print "Error %d: %s"%(e.args[0], e.args[1])
+    print "Error %d: %s"%(e.args[0], e.args[1]) #TODO implement logging to save error message
+    raise e
 
 finally:
     if con:
         con.close()
+
