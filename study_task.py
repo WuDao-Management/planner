@@ -2,6 +2,7 @@ import Tkinter as tk
 from abstract_task import *
 import task_disp
 
+
 class study_task(abstract_task):
     
 
@@ -22,7 +23,7 @@ class study_task(abstract_task):
         self.mysubject = ''
         self.course_choice = tk.StringVar()
 
-
+        self.course_choice.set('Birchoff Algebra')
     def furnish_options(self):
         self.specify_type('work',bg='#ffffBB', foreground = '#3333aa')
         self.add_subjects()
@@ -35,6 +36,7 @@ class study_task(abstract_task):
         mb = self.subject_mb
         mymenu = tk.Menu(mb)
         mb['menu'] = mymenu
+        self.subject_choice.set('Math')
         for subject in self.subjects:
             mymenu.add_radiobutton(label=subject,variable = self.subject_choice , command = self.init_course)
 
@@ -60,6 +62,7 @@ class study_task(abstract_task):
         
 
     def disp_info(self):
+
         self.mycourse = self.course_choice.get()
         self.passcourse = self.mycourse
         self.course_mb.config(text = self.mycourse)
@@ -72,7 +75,8 @@ class study_task(abstract_task):
 
     def get_subject_table_name(self):
         return self.catalog[self.passsubject][self.passcourse][1]
-    def get_subject(self):
+
+    def get_task_category(self):
         return 'study'
    
 #-------------------------------------------------- custom info from xml 

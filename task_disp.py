@@ -1,6 +1,8 @@
 import Tkinter as tk
 from abstract_task import *
 from datetime import *
+import sqlCom 
+sql = sqlCom.sqlCom()
 
 
 #to do update time taken every 10 minutes to give situation awareness
@@ -62,7 +64,8 @@ class task_disp(tk.Frame):
         self.commit_button.grid_forget()
         self.pause_button = Button(self, text= 'Pause', command = self.on_pause)
         self.pause_button.grid(row = 1, column = 3)
-    
+
+#------------------------------------------------------------------------------commit functionality universal among all    
     def on_commit(self):
 
         t3 = tk.Toplevel(self)
@@ -89,17 +92,42 @@ class task_disp(tk.Frame):
 
         self.text = tk.Text(t3,width= 30,height = 3, padx = 4,borderwidth = 2, bg = '#ffffBB')
         self.text.grid(row=0, column = 2, rowspan = 2,columnspan =3, sticky = 'ns')
+        self.text.insert(tk.END, 'testing')
 
-
-        tk.Button(t3, text="Confirm", underline=0, command = self.on_sql_commit ).grid(row=2, column=3, sticky='e')
+        tk.Button(t3, text="Confirm", underline=0, command = lambda: self.on_sql_commit(t3) ).grid(row=2, column=3, sticky='e')
         tk.Button(t3, text='I Regret', command = lambda: t3.destroy()).grid(row = 2, column=4,sticky ='w')
         #remove the task from pool
         
         #to do implement commit functionality
 
-    def on_sql_commit(self):
+    def on_sql_commit(self,t3):
         self.pack_forget()
-        print "commiting data to mysql"
+        tablename = self.task.get_task_category()
+        self.cumTime += (self.curEnd - self.curStart).seconds
+        self.cumTime = self.cumTime/60
+        def today():
+            return datetime.now().strftime("%Y-%m-%d")
+        create_table_query = """create table if not exists %s(
+                                curdate date not null ,
+                                actual_duration int3 not null,
+                                expected_duration int3 not null,
+                                difficulty int2 not null,
+                                satisfaction int2 not null,
+                                per_completed int3 not null,
+                                comments text,
+                                course varchar(40),
+                                detail varchar(100),
+
+                                key(curdate, course, detail));"""%(tablename)
+        sql.excecute(create_table_query)
+        insert_query = """insert into %s values('%s' , %d, %d, %d, %d, %d, '%s', '%s', '%s');
+                                                """%(tablename
+                                                    ,today(), self.cumTime ,self.task.get_expected_duration()
+                                                    ,self.commit_difficulty.get(), self.commit_satisfaction.get(), self.commit_completeion.get()
+                                                    ,self.text.get('1.0',tk.END), self.task.get_table_name(), self.task.commit_detail())
+        print insert_query
+        sql.excecute(insert_query)
+        t3.destroy()
 
     def on_pause(self):
         self.change_color(task_disp.passive_bg)
@@ -135,3 +163,4 @@ class task_disp(tk.Frame):
         
         self.task.on_pause_sql(self.curStart,self.curEnd,int(self.cumcompleted.get()))
         t2.destroy()
+

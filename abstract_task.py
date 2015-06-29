@@ -20,7 +20,10 @@ class abstract_task(tk.Frame):
 
     def init_var(self):
         self.duration = tk.StringVar()
+        self.duration.set('0')
         self.detail = tk.StringVar()
+        self.detail.set('testing')
+        
     def specify_type(self, label, rowspan = 2, **kwargs):
         self.labelname = label
         self.biglabel = tk.Label(self, text = self.labelname, font = "Courier 23 bold" ,**kwargs)
@@ -59,8 +62,11 @@ class abstract_task(tk.Frame):
     def get_subject_table_name(self):
         return "test_subject"
     def get_detail(self):
+        self.duration_for_commit = int(self.duration.get())
+        self.detail_for_commit = self.detail.get()
         return 'Details: ' + self.detail.get() +'\n' + "Expected Duration:" + self.duration.get() + 'min'
-
+    def commit_detail(self):
+        return self.detail_for_commit
     def on_pause_sql(self, start_time,end_time, cumper):
         #pass in a tuple consisting of start time, end time, duration in min
         def datetime_strf(date_time_obj):
@@ -75,17 +81,22 @@ class abstract_task(tk.Frame):
                                                                   datetime_strf(start_time),
                                                                   datetime_strf(end_time),
                                                                   cumper  )
-        print insert_query
+        #print insert_query
+        
         sql.excecute(insert_query)
         pass
+    def get_expected_duration(self):
+        print "testing self duration: %s"%(self.duration.get())
+        return self.duration_for_commit
     def on_commit(self):
         
         # pass in a tuple consisting of total time taken, percentage of work, difficulty and satisfaction
 
         pass
     def get_table_name(self):
-        return 'testing_subject'
-
+        return self.get_subject_table_name()
+    def get_task_category(self):
+        return 'testing_commit'
         #e.grid(row=0, column=3, padx=2, pady=2, sticky='we')
 
 ##-------------------------------------------------------------------------first concrete class
