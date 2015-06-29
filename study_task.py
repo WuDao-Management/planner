@@ -71,10 +71,16 @@ class study_task(abstract_task):
     def get_label(self):
         #print "mysubject is %s"%(self.passsubject )
         #print "mycourse is %s"%(self.passcourse)
-        return self.catalog[self.passsubject][self.passcourse][0] #it appears to be a bug of python
-
+        try:
+            return self.catalog[self.passsubject][self.passcourse][0] #it appears to be a bug of python
+        except AttributeError:
+            return "Rubbish_Input"
+            
     def get_subject_table_name(self):
-        return self.catalog[self.passsubject][self.passcourse][1]
+        try:
+            return self.catalog[self.passsubject][self.passcourse][1]
+        except AttributeError:
+            return "Rubbish_Input"
 
     def get_task_category(self):
         return 'study'

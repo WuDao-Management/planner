@@ -8,7 +8,7 @@ sql = sqlCom.sqlCom()
 #to do update time taken every 10 minutes to give situation awareness
 
 class task_disp(tk.Frame):
-
+    time_refresh_interval = 60000
     pool = None;
     passive_bg = '#D1E7E0'
     active_bg = '#FFB585'
@@ -29,6 +29,9 @@ class task_disp(tk.Frame):
         self.cumcompleted = tk.StringVar()
         self.cumcompleted.set('0')
         self.deltacompleted = 0
+        self.timeLabel = tk.Label(self,text = 'testing time',font = 'Times  14 bold', bg = self.passive_bg, foreground = 'blue')
+        self.timeLabel.grid(row = 1, column = 7)
+        self.active = False
 
     def furnish_options(self):
         self.resume_task()
@@ -49,7 +52,7 @@ class task_disp(tk.Frame):
         self.configure(bg = color)
         self.l1.config(bg = color)
         self.l2.config(bg = color)
-
+        self.timeLabel.config(bg = color)
 
     def create_resume_button(self):
         self.resume_button = Button(self,text = 'Resume', command = self.on_resume)
@@ -58,6 +61,9 @@ class task_disp(tk.Frame):
         self.commit_button.grid(row=1, column = 4)
 
     def on_resume(self):
+        self.active = True
+        self.after(task_disp.time_refresh_interval,lambda:self.display_time())
+
         self.change_color(task_disp.active_bg)
         self.curStart = datetime.now()
         self.resume_button.grid_forget()
@@ -102,6 +108,7 @@ class task_disp(tk.Frame):
 
     def on_sql_commit(self,t3):
         self.pack_forget()
+        
         tablename = self.task.get_task_category()
         self.cumTime += (self.curEnd - self.curStart).seconds
         self.cumTime = self.cumTime/60
@@ -125,11 +132,12 @@ class task_disp(tk.Frame):
                                                     ,today(), self.cumTime ,self.task.get_expected_duration()
                                                     ,self.commit_difficulty.get(), self.commit_satisfaction.get(), self.commit_completeion.get()
                                                     ,self.text.get('1.0',tk.END), self.task.get_table_name(), self.task.commit_detail())
-        print insert_query
+        # print insert_query
         sql.excecute(insert_query)
         t3.destroy()
 
     def on_pause(self):
+        self.active = False
         self.change_color(task_disp.passive_bg)
         self.curEnd = datetime.now()
         self.cumTime += (self.curEnd - self.curStart).seconds
@@ -163,4 +171,15 @@ class task_disp(tk.Frame):
         
         self.task.on_pause_sql(self.curStart,self.curEnd,int(self.cumcompleted.get()))
         t2.destroy()
+    #-------------------------------------------------------------------------------------time display module
+    def display_time(self):
+        cumTime =  self.cumTime
+        cumTime += (datetime.now() - self.curStart).seconds
+        cumTime = cumTime/60
+        print cumTime
+        if self.active:
+            self.timeLabel.config(text = '%s min'%(cumTime))
+            self.after(task_disp.time_refresh_interval,lambda:self.display_time())
+
+
 
