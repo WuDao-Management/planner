@@ -12,6 +12,7 @@ class task_disp(tk.Frame):
     pool = None;
     passive_bg = '#D1E7E0'
     active_bg = '#FFB585'
+    timeformat = lambda self,sec: sec/60;
     def __init__(self, task,  *args, **kwargs):
         #task an instance of abstract task
 
@@ -109,9 +110,14 @@ class task_disp(tk.Frame):
     def on_sql_commit(self,t3):
         self.pack_forget()
         
+        if self.text.get('1.0',tk.END).strip() == 'testing':
+            print 'task cancelled cancel'
+            t3.destroy()
+            return
         tablename = self.task.get_task_category()
-        self.cumTime += (self.curEnd - self.curStart).seconds
-        self.cumTime = self.cumTime/60
+        if self.active:
+            self.cumTime += (self.curEnd - self.curStart).seconds
+        self.cumTime = task_disp.timeformat(self,self.cumTime)
         def today():
             return datetime.now().strftime("%Y-%m-%d")
         create_table_query = """create table if not exists %s(
@@ -132,7 +138,7 @@ class task_disp(tk.Frame):
                                                     ,today(), self.cumTime ,self.task.get_expected_duration()
                                                     ,self.commit_difficulty.get(), self.commit_satisfaction.get(), self.commit_completeion.get()
                                                     ,self.text.get('1.0',tk.END), self.task.get_table_name(), self.task.commit_detail())
-        # print insert_query
+        print insert_query
         sql.excecute(insert_query)
         t3.destroy()
 
@@ -174,9 +180,10 @@ class task_disp(tk.Frame):
     #-------------------------------------------------------------------------------------time display module
     def display_time(self):
         cumTime =  self.cumTime
+        if self.curStart == None: return
         cumTime += (datetime.now() - self.curStart).seconds
-        cumTime = cumTime/60
-        print cumTime
+        cumTime = task_disp.timeformat(self,cumTime)
+        # print cumTime
         if self.active:
             self.timeLabel.config(text = '%s min'%(cumTime))
             self.after(task_disp.time_refresh_interval,lambda:self.display_time())

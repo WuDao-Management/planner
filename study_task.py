@@ -11,6 +11,7 @@ class study_task(abstract_task):
         abstract_task.__init__(self, root,  bd=2,   relief=tk.RAISED)
         self.init_args()
         self.furnish_options()
+
         
     def init_args(self):
         #subjecgts button and course choice
@@ -83,7 +84,7 @@ class study_task(abstract_task):
             return "Rubbish_Input"
 
     def get_task_category(self):
-        return 'study'
+        return 'subject'
    
 #-------------------------------------------------- custom info from xml 
     def pass_info(self):

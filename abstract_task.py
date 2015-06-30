@@ -4,6 +4,7 @@ import task_disp
 import tkFont
 import MySQLdb as mbd
 import sqlCom 
+from copy import copy
 sql = sqlCom.sqlCom()
 
 
@@ -35,9 +36,9 @@ class abstract_task(tk.Frame):
 
     def on_start(self):
         self.pack_forget()
-        
-        task_disp.task_disp(self)
-        self = self.__init__(self.root)
+        pasobj = copy(self)
+        task_disp.task_disp(pasobj)
+        self.__init__(self.root)
 
 #notice that timeVar is a String , will convert that to float
     def duration_details(self):
@@ -81,7 +82,7 @@ class abstract_task(tk.Frame):
                                                                   datetime_strf(start_time),
                                                                   datetime_strf(end_time),
                                                                   cumper  )
-        #print insert_query
+        print insert_query
         
         sql.excecute(insert_query)
         pass
