@@ -9,19 +9,29 @@ sql = sqlCom.sqlCom()
 
 class task_disp(tk.Frame):
     time_refresh_interval = 60000
-    pool = None;
+    pool = None
+
+    width = 580
     passive_bg = '#D1E7E0'
     active_bg = '#FFB585'
     timeformat = lambda self,sec: sec/60;
-    def __init__(self, task,  *args, **kwargs):
-        #task an instance of abstract task
 
-        tk.Frame.__init__(self, relief = tk.SUNKEN, bg= task_disp.passive_bg, width = 200,bd = 2, *args, **kwargs)
+    def __init__(self ,*args, **kwargs):
+        #task an instance of abstract task
+        # self.root = task_disp.pool
+
+        tk.Frame.__init__(self, task_disp.pool,  width = task_disp.width,relief = tk.SUNKEN, bg= task_disp.passive_bg,bd = 2, **kwargs)
+
+        self.pack(fill = tk.X, side = 'top')
+        #  self.pack( side = tk.TOP, fill = tk.X,  anchor = 'nw')
+    def set_task(self, task):
         self.task = task
         self.create_resume_button()
-        self.pack(task_disp.pool, side = tk.TOP, fill = tk.X,  anchor = 'n')
         self.init_var()
         self.furnish_options()
+
+        
+        print "packing display widget"
 
     def init_var(self):
         self.curStart = None
@@ -30,7 +40,7 @@ class task_disp(tk.Frame):
         self.cumcompleted = tk.StringVar()
         self.cumcompleted.set('0')
         self.deltacompleted = 0
-        self.timeLabel = tk.Label(self,text = 'testing time',font = 'Times  14 bold', bg = self.passive_bg, foreground = 'blue')
+        self.timeLabel = tk.Label(self,text = '0 min',font = 'Times  14 bold', bg = self.passive_bg, foreground = 'blue')
         self.timeLabel.grid(row = 1, column = 7)
         self.active = False
 
@@ -64,13 +74,23 @@ class task_disp(tk.Frame):
     def on_resume(self):
         self.active = True
         self.after(task_disp.time_refresh_interval,lambda:self.display_time())
-
         self.change_color(task_disp.active_bg)
         self.curStart = datetime.now()
-        self.resume_button.grid_forget()
-        self.commit_button.grid_forget()
-        self.pause_button = Button(self, text= 'Pause', command = self.on_pause)
-        self.pause_button.grid(row = 1, column = 3)
+        self.resume_button.config(text = 'Pause ', command = self.on_pause)
+        self.commit_button.config(state = 'disabled')
+        # self.pause_button = Button(self, text= 'Pause', command = self.on_pause)
+        # self.pause_button.grid(row = 1, column = 3)
+
+    def on_pause(self):
+        self.active = False
+        self.change_color(task_disp.passive_bg)
+        self.curEnd = datetime.now()
+        self.cumTime += (self.curEnd - self.curStart).seconds
+        self.ask_percent_completion()
+#        self.pause_button.grid_forget()
+        self.resume_button.config(text = 'Resume', command = self.on_resume)
+        self.commit_button.config(state = 'normal')
+        # self.resume_button.grid(row = 1, column = 4)
 
 #------------------------------------------------------------------------------commit functionality universal among all    
     def on_commit(self):
@@ -142,15 +162,7 @@ class task_disp(tk.Frame):
         sql.excecute(insert_query)
         t3.destroy()
 
-    def on_pause(self):
-        self.active = False
-        self.change_color(task_disp.passive_bg)
-        self.curEnd = datetime.now()
-        self.cumTime += (self.curEnd - self.curStart).seconds
-        self.ask_percent_completion()
-        self.pause_button.grid_forget()
-        self.commit_button.grid(row=1, column = 5)
-        self.resume_button.grid(row = 1, column = 4)
+
 
         #to do implement insert into database
    

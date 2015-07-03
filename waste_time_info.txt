@@ -1,0 +1,4 @@
+{
+    "Computer ":("Computer\nSurfing","Computer_Surfing")
+    ,"Mobile":("Cell\nPhone", "Cell_Phone")
+}

@@ -1,9 +1,10 @@
 import Tkinter as tk
 from Tkinter import *
-import task_disp
+from task_disp import task_disp
 import tkFont
 import MySQLdb as mbd
 import sqlCom 
+
 from copy import copy
 sql = sqlCom.sqlCom()
 
@@ -37,8 +38,11 @@ class abstract_task(tk.Frame):
     def on_start(self):
         self.pack_forget()
         pasobj = copy(self)
-        task_disp.task_disp(pasobj)
-        self.__init__(self.root)
+        tsk = task_disp()
+        tsk.set_task(pasobj)
+        ##############################
+
+        self.__init__(self.root, fill = tk.X)
 
 #notice that timeVar is a String , will convert that to float
     def duration_details(self):
