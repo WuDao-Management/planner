@@ -8,8 +8,9 @@ import waste_time_task
 class Manager(object):
     def __init__(self):
         self.root = tk.Tk()
-        self.root.geometry('1040x900')
+        # self.root.geometry('1040x900')
         self.root.config(bg = 'grey')
+
         self.create_left_panel()
         self.create_sperator()
 
@@ -26,7 +27,7 @@ class Manager(object):
 
 
     def create_sperator(self):
-        separator = Frame(self.root, width = 10,bg='orange')
+        separator = Frame(self.root, width = 10,bg='orange', height = 900)
         separator.pack(side = tk.LEFT, anchor = 'nw', fill = tk.Y, expand= True)
 
 

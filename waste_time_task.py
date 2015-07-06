@@ -17,7 +17,7 @@ class waste_time(study_task):
 
 
     def furnish_options(self):
-        self.specify_type('Wast', bg = "#F0B6F0", foreground = "#751975")
+        self.specify_type('wast', bg = "#F0B6F0", foreground = "#751975")
         self.add_programs()
 
     def add_programs(self):
@@ -37,7 +37,7 @@ class waste_time(study_task):
 
         self.myprogram = self.program_choice.get()
         self.passprogram = self.myprogram
-        self.course_mb.config(text = self.myprogram)
+        self.program_mb.config(text = self.myprogram)
 
 
     def get_label(self):
@@ -50,7 +50,7 @@ class waste_time(study_task):
             
     def get_subject_table_name(self):
         try:
-            return self.data[self.passprogram][self.passcourse][1]
+            return self.data[self.passprogram][1]
         except AttributeError:
             return "Rubbish_Input"
 

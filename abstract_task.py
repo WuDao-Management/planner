@@ -55,6 +55,7 @@ class abstract_task(tk.Frame):
         Label(self, text ='Time(Min)').grid(row=1,column=3)
         
         detailEntry = Entry(self,textvariable =  timeVar, width=15)
+        timeVar.set('1')
         detailEntry.grid(column=4, row= 1)
         #e = Entry(self, width=25)
 
