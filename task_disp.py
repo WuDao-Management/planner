@@ -6,15 +6,17 @@ sql = sqlCom.sqlCom()
 import ttk
 
 #to do update time taken every 10 minutes to give situation awareness
-
+miliseconds = 1000
+seconds = 1
 class task_disp(tk.Frame):
-    time_refresh_interval = 60*1000
+    time_refresh_interval = seconds*miliseconds;
+
     pool = None
 
     width = 580
     passive_bg = '#D1E7E0'
     active_bg = '#FFB585'
-    timeformat = lambda self,sec: sec/60;
+    timeformat = lambda self,sec: sec/seconds;
 
     def __init__(self ,*args, **kwargs):
         #task an instance of abstract task
@@ -195,21 +197,21 @@ class task_disp(tk.Frame):
         #print "in display time"
         cumTime =  self.cumTime
         if self.curStart == None: return
-        cumTime += (datetime.now() - self.curStart).seconds
-        cumTime = task_disp.timeformat(self,cumTime)
+        cumTime += (datetime.now() - self.curStart).seconds 
+        cumTime = task_disp.timeformat(self,cumTime) #convert to min
+        self.float_cur_progress = cumTime/float(self.maxtime) * 100 
+        self.timeLabel.config(text = "%s min"%(cumTime))
         # print cumTime
         if self.active:
-            self.timeLabel.config(text = '%s min'%(cumTime))
+            #print self.float_cur_progress
+            self.curprogress.set(self.float_cur_progress)
             self.after(task_disp.time_refresh_interval,lambda:self.display_time())
-            var = self.curprogress.get() + self.progress_ratio
-            #print var
-            self.curprogress.set(var)
 
     def create_progress_bar(self):
         interval = task_disp.time_refresh_interval
         root = self
-        maxtime = int(self.task.get_expected_duration())*60*1000
-        self.progress_ratio =100.0/(float(maxtime)/float(interval))
+        self.maxtime = int(self.task.get_expected_duration()) #duration in min
+        self.float_cur_progress = 0
         self.curprogress = tk.IntVar()
         self.curprogress.set(0)
         progressbar = ttk.Progressbar(root, length = 100,  variable=self.curprogress)
