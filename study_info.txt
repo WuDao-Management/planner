@@ -7,5 +7,6 @@
             
     , 'Programming':{'Manager': ('Manager', 'Programming_Manager'),
                     'Tkinter':('HotShot\n Tkinter','Programing_PyGUI')
-                    ,'Django':('Practical_Django_Projects', 'Programming_Django')}
+                    ,'Django':('Django\n Projects', 'Programming_Django')}
+    , 'Others':{'Thinking':('thinking','thinking')}
 }

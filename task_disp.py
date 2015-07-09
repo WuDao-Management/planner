@@ -5,12 +5,15 @@ import sqlCom
 sql = sqlCom.sqlCom()
 import ttk
 
-#to do update time taken every 10 minutes to give situation awareness
+
+#todo total time required to make it more clear during planning and excecution of task
+#todo implement reconstructing from historical records
+
 miliseconds = 1000
-seconds = 1
+seconds = 60
 class task_disp(tk.Frame):
     time_refresh_interval = seconds*miliseconds;
-
+    
     pool = None
 
     width = 580
@@ -23,7 +26,7 @@ class task_disp(tk.Frame):
         # self.root = task_disp.pool
 
         tk.Frame.__init__(self, task_disp.pool,  width = task_disp.width,relief = tk.SUNKEN, bg= task_disp.passive_bg,bd = 2, **kwargs)
-
+        
         self.pack(fill = tk.X, side = 'top')
         #  self.pack( side = tk.TOP, fill = tk.X,  anchor = 'nw')
     def set_task(self, task):
@@ -164,6 +167,7 @@ class task_disp(tk.Frame):
         print insert_query
         sql.excecute(insert_query)
         t3.destroy()
+        
 
 
 
@@ -200,10 +204,11 @@ class task_disp(tk.Frame):
         cumTime += (datetime.now() - self.curStart).seconds 
         cumTime = task_disp.timeformat(self,cumTime) #convert to min
         self.float_cur_progress = cumTime/float(self.maxtime) * 100 
-        self.timeLabel.config(text = "%s min"%(cumTime))
+        
         # print cumTime
         if self.active:
             #print self.float_cur_progress
+            self.timeLabel.config(text = "%s min"%(cumTime))
             self.curprogress.set(self.float_cur_progress)
             self.after(task_disp.time_refresh_interval,lambda:self.display_time())
 
